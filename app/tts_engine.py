@@ -130,7 +130,14 @@ class TTSEngine:
         if requested_device == "cpu":
             self._device = "cpu"
         elif requested_device == "cuda":
-            self._device = "cuda"
+            if _cuda_available():
+                self._device = "cuda"
+            else:
+                self._device = "cpu"
+                self._last_error = (
+                    "TTS_DEVICE=cuda requested, but CUDAExecutionProvider is unavailable. "
+                    "Falling back to CPU."
+                )
         else:
             self._device = "cuda" if _cuda_available() else "cpu"
         self._model = {"piper_ready": True}

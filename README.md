@@ -21,7 +21,7 @@ bash scripts/start.sh
 
 Скрипты автоматически:
 - создают `.venv` (если его нет),
-- устанавливают зависимости из `requirements.txt`,
+- ставят зависимости при первом запуске (или по явному флагу),
 - запускают `uvicorn` c `APP_HOST`/`APP_PORT` из `.env` (если хост/порт не переданы аргументами).
 
 ## 2. Ручная установка (опционально)
@@ -67,6 +67,10 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 Пример явного переопределения через аргументы:
 - PowerShell: `.\scripts\start.ps1 -HostAddress 0.0.0.0 -Port 9000`
 - Bash: `bash scripts/start.sh 0.0.0.0 9000`
+
+Принудительная переустановка зависимостей:
+- PowerShell: `.\scripts\start.ps1 -InstallDeps`
+- Bash: `bash scripts/start.sh "" "" --install-deps`
 
 ## 5. API
 
