@@ -1,0 +1,39 @@
+# Python cache/artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test/cache tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Logs/runtime files
+*.log
+*.pid
+
+# Audio previews/temp outputs
+voice_previews/
+*.tmp.wav
+*.preview.wav
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
