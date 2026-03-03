@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import subprocess
 import sys
 import tempfile
@@ -36,6 +37,7 @@ class TTSEngine:
         self._backend = "pyttsx3"
         self._model: Any | None = None
         self._last_error: str | None = None
+        self._pyttsx3_base_rate: int | None = None
 
     @property
     def device(self) -> str:
@@ -80,11 +82,11 @@ class TTSEngine:
         self._load_pyttsx3()
 
     def list_voices(self) -> list[VoicePreset]:
-        if self._backend == "piper":
-            return self._list_piper_voices()
-
         if not self.ready:
             self.load()
+
+        if self._backend == "piper":
+            return self._list_piper_voices()
 
         if self._backend == "coqui":
             voices_dir = self._settings.voices_dir_path
@@ -108,12 +110,11 @@ class TTSEngine:
         voice: str | None,
         speed: float | None,
     ) -> bytes:
-        if self._backend == "piper":
-            return self._synthesize_piper(text=text, voice=voice, speed=speed)
-
         if not self.ready:
             self.load()
 
+        if self._backend == "piper":
+            return self._synthesize_piper(text=text, voice=voice, speed=speed)
         if self._backend == "coqui":
             return self._synthesize_coqui(text=text, language=language, voice=voice, speed=speed)
         return self._synthesize_pyttsx3(text=text, voice=voice, speed=speed)
@@ -162,6 +163,7 @@ class TTSEngine:
         self._model = pyttsx3.init()
         self._backend = "pyttsx3"
         self._device = "cpu"
+        self._pyttsx3_base_rate = int(self._model.getProperty("rate"))
 
     def _load_coqui(self) -> None:
         try:
@@ -331,7 +333,10 @@ class TTSEngine:
             engine.setProperty("voice", voice)
 
         if speed is not None:
-            base_rate = int(engine.getProperty("rate"))
+            base_rate = self._pyttsx3_base_rate
+            if base_rate is None:
+                base_rate = int(engine.getProperty("rate"))
+                self._pyttsx3_base_rate = base_rate
             engine.setProperty("rate", int(base_rate * speed))
 
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:

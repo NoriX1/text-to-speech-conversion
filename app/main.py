@@ -79,12 +79,6 @@ def list_voices() -> JSONResponse:
 
 @app.post("/v1/tts")
 def synthesize(payload: TTSRequest):
-    if len(payload.text) > settings.tts_max_text_length:
-        raise HTTPException(
-            status_code=400,
-            detail=f"text is too long: {len(payload.text)} > {settings.tts_max_text_length}",
-        )
-
     language = payload.language or settings.tts_default_language
     voice = payload.voice or settings.tts_default_voice
     speed = payload.speed if payload.speed is not None else settings.tts_default_speed
