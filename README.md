@@ -5,7 +5,26 @@
 Основной backend: `piper` (качественные офлайн ONNX-голоса).  
 Fallback: `pyttsx3` (системный TTS).
 
-## 1. Установка
+## 1. Быстрый старт (рекомендуется)
+
+### Windows
+```powershell
+copy .env.example .env
+.\scripts\start.ps1
+```
+
+### Linux
+```bash
+cp .env.example .env
+bash scripts/start.sh
+```
+
+Скрипты автоматически:
+- создают `.venv` (если его нет),
+- устанавливают зависимости из `requirements.txt`,
+- запускают `uvicorn` c `APP_HOST`/`APP_PORT` из `.env` (если хост/порт не переданы аргументами).
+
+## 2. Ручная установка (опционально)
 
 ### Windows
 ```powershell
@@ -25,7 +44,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-## 2. Скачать голоса Piper
+## 3. Скачать голоса Piper
 ```powershell
 .\.venv\Scripts\python.exe scripts\download_piper_voices.py
 ```
@@ -38,14 +57,18 @@ cp .env.example .env
 
 Файлы попадут в `voices/piper`.
 
-## 3. Запуск сервера
+## 4. Запуск сервера (ручной вариант)
 ```powershell
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 Скрипты `scripts/start.ps1` и `scripts/start.sh` читают `APP_HOST`/`APP_PORT` из `.env`, если host/port не переданы аргументами.
 
-## 4. API
+Пример явного переопределения через аргументы:
+- PowerShell: `.\scripts\start.ps1 -HostAddress 0.0.0.0 -Port 9000`
+- Bash: `bash scripts/start.sh 0.0.0.0 9000`
+
+## 5. API
 
 ### `GET /health`
 Проверка состояния сервиса.
@@ -64,7 +87,7 @@ curl -X POST "http://127.0.0.1:8000/v1/tts" \
   --output out.wav
 ```
 
-## 5. Настройки `.env`
+## 6. Настройки `.env`
 ```dotenv
 APP_HOST=127.0.0.1
 APP_PORT=8000
