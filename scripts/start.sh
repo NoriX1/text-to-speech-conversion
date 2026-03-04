@@ -1,5 +1,9 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_ROOT}"
 
 HOST_ADDRESS="${1:-}"
 PORT="${2:-}"
@@ -30,4 +34,4 @@ if [ -z "${PORT}" ]; then
   PORT="${ENV_PORT}"
 fi
 
-uvicorn app.main:app --host "${HOST_ADDRESS}" --port "${PORT}"
+python -m uvicorn app.main:app --host "${HOST_ADDRESS}" --port "${PORT}"
